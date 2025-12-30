@@ -133,7 +133,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, refreshEvents }) => {
                   onClick={handleRSVP} 
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-medium transition"
                 >
-                  <i className="fa fa-book" aria-hidden="true"></i> Now
+                  <i className="fa fa-book" aria-hidden="true"></i> Book Now
                 </button>
               )}
             </>
