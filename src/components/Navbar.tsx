@@ -26,6 +26,7 @@ const Navbar = () => {
   // Dropdowns
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileDropUpRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
 
   // Load user
@@ -69,8 +70,10 @@ const Navbar = () => {
         !dropdownRef.current.contains(e.target as Node)
       ) {
         setShowProfileDropdown(false);
-        setShowProfileDropUp(false)
-      }
+      
+      }if (mobileDropUpRef.current && !mobileDropUpRef.current.contains(target)) {
+    setShowProfileDropUp(false);
+  }
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setShowResults(false);
       }
@@ -411,7 +414,7 @@ const Navbar = () => {
 
           {/* ⬆️ PROFILE DROP-UP (Mobile) */}
           {showProfileDropUp && (
-            <div className="absolute bottom-16 right-2 w-44 bg-white rounded-xl shadow-xl border border-gray-200 md:hidden animate-fade-in">
+            <div ref={mobileDropUpRef} className="absolute bottom-16 right-2 w-44 bg-white rounded-xl shadow-xl border border-gray-200 md:hidden animate-fade-in">
               {/* Premium */}
               <Link
                 to="/premium"
