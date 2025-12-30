@@ -65,6 +65,7 @@ const Navbar = () => {
     window.addEventListener("auth-change", loadUser);
 
     const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(e.target as Node)
