@@ -5,8 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import type { AuthResponse } from '../types';
 
 const AuthPage = () => {
-  const [isLogin, setIsLogin] = useState(true); // Toggle state
+  const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  
+  // 1. Add loading state
+  const [loading, setLoading] = useState(false); 
+  
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,6 +19,10 @@ const AuthPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // 2. Start loading
+    setLoading(true); 
+
     const endpoint = isLogin ? '/auth/login' : '/auth/register';
     
     try {
@@ -23,8 +31,6 @@ const AuthPage = () => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
-      // === ADD THIS LINE ===
-      // Tell the rest of the app that auth has changed
       window.dispatchEvent(new Event('auth-change'));
 
       if (isLogin) {
@@ -32,8 +38,12 @@ const AuthPage = () => {
       } else {
         navigate('/profile-update'); 
       }
+      // Note: We don't need setLoading(false) here because the page navigates away immediately
     } catch (err: any) {
       alert(err.response?.data?.message || 'Authentication Failed');
+      
+      // 3. Stop loading only if there is an error (so the user can try again)
+      setLoading(false); 
     }
   };
 
@@ -63,8 +73,15 @@ const AuthPage = () => {
             className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none"
           />
           
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition font-semibold">
-            {isLogin ? 'Login' : 'Register'}
+          {/* 4. Update the button to handle loading state */}
+          <button 
+            type="submit" 
+            disabled={loading} // Disable button while loading
+            className={`w-full text-white py-2 rounded transition font-semibold 
+              ${loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
+            `}
+          >
+            {loading ? 'Processing...' : (isLogin ? 'Login' : 'Register')}
           </button>
         </form>
 
@@ -73,6 +90,7 @@ const AuthPage = () => {
           <button 
             onClick={() => setIsLogin(!isLogin)} 
             className="text-blue-600 font-bold hover:underline"
+            disabled={loading} // Also disable this link while loading
           >
             {isLogin ? 'Register' : 'Login'}
           </button>
